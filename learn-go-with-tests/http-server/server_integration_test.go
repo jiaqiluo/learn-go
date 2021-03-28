@@ -1,4 +1,4 @@
-package main
+package poker
 
 import (
 	"net/http"
@@ -7,7 +7,14 @@ import (
 )
 
 func TestRecordingWinsAndRetrievingThem(t *testing.T) {
-	store := NewInMemoryPlayerStore()
+	//store := NewInMemoryPlayerStore()
+	database, cleanDatabase := createTempFile(t, "[]")
+	defer cleanDatabase()
+
+	store, err := NewFileSystemPlayerStore(database)
+	if err != nil {
+		t.Fatalf("didn't expect an error but got one, %v", err)
+	}
 	server := NewPlayerServer(store)
 	player := "Pepper"
 

@@ -1,4 +1,4 @@
-package main
+package poker
 
 type InMemoryPlayerStore struct {
 	store map[string]int
@@ -17,10 +17,10 @@ func (i *InMemoryPlayerStore) GetPlayerScore(name string) int {
 	return i.store[name]
 }
 
-func (i *InMemoryPlayerStore) GetLeague() (league []Player) {
-	//var league []Player
+func (i *InMemoryPlayerStore) GetLeague() League {
+	var league []Player
 	for name, wins := range i.store {
 		league = append(league, Player{name, wins})
 	}
-	return
+	return league
 }
