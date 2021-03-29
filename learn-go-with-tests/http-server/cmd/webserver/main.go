@@ -1,26 +1,22 @@
 package main
 
 import (
-	"github.com/jiaqiluo/learn-go/learn-go-with-tests/http-server/poker"
+	"github.com/jiaqiluo/learn-go/learn-go-with-tests/http-server"
 	"log"
 	"net/http"
-	"os"
 )
 
 const dbFileName = "game.db.json"
 
 func main() {
-	db, err := os.OpenFile(dbFileName, os.O_RDWR|os.O_CREATE, 0666)
+	store, closefile, err := poker.FileSystemPlayerStoreFromFile(dbFileName)
 
 	if err != nil {
-		log.Fatalf("problem opening %s %v", dbFileName, err)
+		log.Fatal(err)
 	}
+	defer closefile()
 
-	store, err := NewFileSystemPlayerStore(db)
-	if err != nil {
-		log.Fatalf("problem creating file system player store, %v ", err)
-	}
-	server := NewPlayerServer(store)
+	server := poker.NewPlayerServer(store)
 
 	if err := http.ListenAndServe(":5000", server); err != nil {
 		log.Fatalf("could not listen on port 5000 %v", err)
